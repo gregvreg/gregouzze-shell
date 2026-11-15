@@ -147,12 +147,12 @@ check_dependencies() {
 
     if [[ -n "$aur_helper" ]]; then
         log_info "Installing automatically via $aur_helper (--noconfirm)..."
-        "$aur_helper" -S --needed --noconfirm "${missing_packages[@]}"
+        "$aur_helper" -Sy --needed --noconfirm "${missing_packages[@]}"
         log_ok "Dependencies installed successfully."
     else
-        log_info "No AUR helper found. Installing automatically via sudo pacman (--noconfirm)..."
-        sudo pacman -S --needed --noconfirm "${missing_packages[@]}"
-        log_ok "Dependencies installed successfully."
+        log_info "No AUR helper found. Installing automatically via official pacman repos (--noconfirm)..."
+        sudo pacman -Sy --needed --noconfirm "${missing_packages[@]}"
+        log_ok "Dependencies installed successfully via pacman."
     fi
 }
 
