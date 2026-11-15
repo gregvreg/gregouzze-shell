@@ -1,45 +1,51 @@
-// Auto-generated Quickshell Colors singleton by Matugen
-// Theme: Material You (Dark Mode) - gregouzze-shell
+// ==============================================================================
+// Auto-generated Quickshell Colors Singleton by Matugen
+// Theme: Material You (Dark Mode Forced) - gregouzze-shell
+// ==============================================================================
+
 pragma Singleton
 import QtQuick
 
 QtObject {
     id: root
 
+    // Theme Mode
+    readonly property string mode: "dark"
+
     // Core Surfaces & Backgrounds
-    readonly property color background: "#111318"
-    readonly property color onBackground: "#e1e2e9"
-    readonly property color surface: "#111318"
-    readonly property color onSurface: "#e1e2e9"
-    readonly property color surfaceVariant: "#43474e"
-    readonly property color onSurfaceVariant: "#c3c6cf"
-    readonly property color surfaceContainerLowest: "#0c0e13"
-    readonly property color surfaceContainerLow: "#191c20"
-    readonly property color surfaceContainer: "#1d2024"
-    readonly property color surfaceContainerHigh: "#272a2f"
-    readonly property color surfaceContainerHighest: "#32353a"
+    readonly property color background: "#121318"
+    readonly property color onBackground: "#e3e2e9"
+    readonly property color surface: "#121318"
+    readonly property color onSurface: "#e3e2e9"
+    readonly property color surfaceVariant: "#45464f"
+    readonly property color onSurfaceVariant: "#c5c6d0"
+    readonly property color surfaceContainerLowest: "#0d0e13"
+    readonly property color surfaceContainerLow: "#1a1b21"
+    readonly property color surfaceContainer: "#1e1f25"
+    readonly property color surfaceContainerHigh: "#292a2f"
+    readonly property color surfaceContainerHighest: "#34343a"
 
     // Primary Accents
-    readonly property color primary: "#a4c9fe"
-    readonly property color onPrimary: "#00315d"
-    readonly property color primaryContainer: "#204876"
-    readonly property color onPrimaryContainer: "#d4e3ff"
+    readonly property color primary: "#b4c5ff"
+    readonly property color onPrimary: "#1a2d60"
+    readonly property color primaryContainer: "#324478"
+    readonly property color onPrimaryContainer: "#dbe1ff"
 
     // Secondary Accents
-    readonly property color secondary: "#bcc7db"
-    readonly property color onSecondary: "#263141"
-    readonly property color secondaryContainer: "#3d4758"
-    readonly property color onSecondaryContainer: "#d8e3f8"
+    readonly property color secondary: "#c1c5dd"
+    readonly property color onSecondary: "#2b3042"
+    readonly property color secondaryContainer: "#414659"
+    readonly property color onSecondaryContainer: "#dde1f9"
 
     // Tertiary Accents
-    readonly property color tertiary: "#d9bde3"
-    readonly property color onTertiary: "#3d2946"
-    readonly property color tertiaryContainer: "#543f5e"
-    readonly property color onTertiaryContainer: "#f6d9ff"
+    readonly property color tertiary: "#e2bbdb"
+    readonly property color onTertiary: "#422741"
+    readonly property color tertiaryContainer: "#5a3d58"
+    readonly property color onTertiaryContainer: "#ffd6f8"
 
     // Outlines & Borders
-    readonly property color outline: "#8d9199"
-    readonly property color outlineVariant: "#43474e"
+    readonly property color outline: "#8f909a"
+    readonly property color outlineVariant: "#45464f"
 
     // Semantic States
     readonly property color error: "#ffb4ab"
@@ -48,4 +54,17 @@ QtObject {
     readonly property color onErrorContainer: "#ffdad6"
     readonly property color shadow: "#000000"
     readonly property color scrim: "#000000"
+
+    // UI Convenience Aliases (for Caelestia / modern QML widgets)
+    readonly property color accent: primary
+    readonly property color onAccent: onPrimary
+    readonly property color bg: surface
+    readonly property color fg: onSurface
+    readonly property color borderActive: primary
+    readonly property color borderInactive: outlineVariant
+
+    // Helper: Returns a copy of the input color with an overridden alpha channel (0.0 to 1.0)
+    function withAlpha(baseColor: color, alphaValue: real): color {
+        return Qt.rgba(baseColor.r, baseColor.g, baseColor.b, Math.max(0.0, Math.min(1.0, alphaValue)));
+    }
 }
