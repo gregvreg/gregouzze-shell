@@ -227,22 +227,24 @@ setup_symlinks() {
 # 3. Initialize Color Scheme
 # ------------------------------------------------------------------------------
 init_color_scheme() {
-    log_section "Initializing Default Color Scheme (Matugen Dark Mode)"
+    log_section "Initializing Default Wallpaper & Color Scheme"
 
-    local test_color="#2563eb"
-    if command -v matugen >/dev/null 2>&1; then
-        if [[ -f "$SHELL_DIR/.wallpaper_path" && -f "$(cat "$SHELL_DIR/.wallpaper_path")" ]]; then
-            local active_wall
-            active_wall="$(cat "$SHELL_DIR/.wallpaper_path")"
-            log_info "Refreshing colors from current wallpaper: $active_wall"
-            "$SCRIPTS_SRC/wall-switch.sh" "$active_wall" || true
-        else
-            log_info "No previous wallpaper found. Generating base dark theme palette ($test_color)..."
-            matugen -c "$MATUGEN_SRC/config.toml" color hex "$test_color" -m dark >/dev/null 2>&1 || true
-            log_ok "Default color palette generated."
-        fi
-    else
-        log_warn "Matugen not installed. Color generation skipped."
+    local default_wall="$SHELL_DIR/assets/default_wallpaper.png"
+    local active_wall=""
+
+    if [[ -f "$SHELL_DIR/.wallpaper_path" && -f "$(cat "$SHELL_DIR/.wallpaper_path")" ]]; then
+        active_wall="$(cat "$SHELL_DIR/.wallpaper_path")"
+    elif [[ -f "$default_wall" ]]; then
+        active_wall="$default_wall"
+    fi
+
+    if [[ -n "$active_wall" ]]; then
+        log_info "Applying wallpaper & generating dynamic Material You dark palette: $active_wall"
+        "$SCRIPTS_SRC/wall-switch.sh" "$active_wall" || true
+    elif command -v matugen >/dev/null 2>&1; then
+        log_info "Generating base dark theme palette (#2563eb)..."
+        matugen -c "$MATUGEN_SRC/config.toml" color hex "#2563eb" -m dark >/dev/null 2>&1 || true
+        log_ok "Default color palette generated."
     fi
 }
 
@@ -256,11 +258,29 @@ run_install() {
     setup_symlinks
     init_color_scheme
 
+    # Hot-reload if currently in a live Wayland / Hyprland session
+    if [[ -n "${WAYLAND_DISPLAY:-}" || -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+        log_section "Applying Live Changes to Active Desktop"
+        if command -v hyprctl >/dev/null 2>&1; then
+            hyprctl reload >/dev/null 2>&1 || true
+            log_ok "Hyprland configuration reloaded."
+        fi
+        pkill -SIGUSR1 kitty 2>/dev/null || true
+        
+        if command -v quickshell >/dev/null 2>&1; then
+            pkill quickshell 2>/dev/null || true
+            sleep 0.2
+            quickshell >/dev/null 2>&1 & disown
+            log_ok "Quickshell top bar started."
+        fi
+    fi
+
     log_section "Installation Completed Successfully! 🎉"
-    echo -e "You can now test switching wallpapers dynamically at any time using:"
-    echo -e "  ${C_BOLD}${C_CYAN}~/.config/gregouzze-shell/scripts/wall-switch.sh <path-to-image>${C_RESET}\n"
-    echo -e "To reload Hyprland configs:"
-    echo -e "  ${C_BOLD}hyprctl reload${C_RESET}\n"
+    echo -e "gregouzze-shell is active. Quick actions:"
+    echo -e "  • ${C_BOLD}Launch Terminal${C_RESET}       : Press ${C_CYAN}Super + Enter${C_RESET} (Kitty)"
+    echo -e "  • ${C_BOLD}Switch Wallpaper${C_RESET}      : ${C_CYAN}~/.config/gregouzze-shell/scripts/wall-switch.sh <image>${C_RESET}"
+    echo -e "  • ${C_BOLD}If in TTY console${C_RESET}     : Type ${C_CYAN}Hyprland${C_RESET} to start the graphical session"
+    echo -e "  • ${C_BOLD}Reload Shell${C_RESET}          : Press ${C_CYAN}Super + M${C_RESET} to re-login or run ${C_CYAN}hyprctl reload${C_RESET}\n"
 }
 
 # ------------------------------------------------------------------------------
