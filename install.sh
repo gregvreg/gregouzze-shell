@@ -293,10 +293,14 @@ run_update() {
     cd "$SHELL_DIR"
 
     if [[ -d ".git" ]]; then
-        log_info "Pulling latest changes from remote..."
+        log_info "Discarding local generated cache files before pull..."
+        git checkout -- hypr/colors.conf kitty/colors.conf quickshell/Colors.qml quickshell/colors.json 2>/dev/null || true
         git pull --rebase || {
-            log_error "git pull encountered conflicts or failed. Please resolve git state manually."
-            exit 1
+            log_warn "git pull conflict detected, syncing cleanly with remote..."
+            git reset --hard origin/main || {
+                log_error "Failed to sync git repository."
+                exit 1
+            }
         }
         log_ok "Repository is up to date."
     else
