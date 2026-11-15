@@ -14,37 +14,37 @@ QtObject {
 
     // Core Surfaces & Backgrounds
     readonly property color background: "#121318"
-    readonly property color onBackground: "#e3e2e9"
+    readonly property color onBackground: "#e3e1e9"
     readonly property color surface: "#121318"
-    readonly property color onSurface: "#e3e2e9"
+    readonly property color onSurface: "#e3e1e9"
     readonly property color surfaceVariant: "#45464f"
-    readonly property color onSurfaceVariant: "#c5c6d0"
+    readonly property color onSurfaceVariant: "#c6c5d0"
     readonly property color surfaceContainerLowest: "#0d0e13"
-    readonly property color surfaceContainerLow: "#1a1b21"
-    readonly property color surfaceContainer: "#1e1f25"
+    readonly property color surfaceContainerLow: "#1b1b21"
+    readonly property color surfaceContainer: "#1f1f25"
     readonly property color surfaceContainerHigh: "#292a2f"
     readonly property color surfaceContainerHighest: "#34343a"
 
     // Primary Accents
-    readonly property color primary: "#b4c5ff"
-    readonly property color onPrimary: "#1a2d60"
-    readonly property color primaryContainer: "#324478"
-    readonly property color onPrimaryContainer: "#dbe1ff"
+    readonly property color primary: "#b9c3ff"
+    readonly property color onPrimary: "#212c61"
+    readonly property color primaryContainer: "#384379"
+    readonly property color onPrimaryContainer: "#dee1ff"
 
     // Secondary Accents
-    readonly property color secondary: "#c1c5dd"
-    readonly property color onSecondary: "#2b3042"
-    readonly property color secondaryContainer: "#414659"
-    readonly property color onSecondaryContainer: "#dde1f9"
+    readonly property color secondary: "#c3c5dd"
+    readonly property color onSecondary: "#2c2f42"
+    readonly property color secondaryContainer: "#434659"
+    readonly property color onSecondaryContainer: "#dfe1f9"
 
     // Tertiary Accents
-    readonly property color tertiary: "#e2bbdb"
-    readonly property color onTertiary: "#422741"
-    readonly property color tertiaryContainer: "#5a3d58"
-    readonly property color onTertiaryContainer: "#ffd6f8"
+    readonly property color tertiary: "#e5bad8"
+    readonly property color onTertiary: "#44263e"
+    readonly property color tertiaryContainer: "#5c3c55"
+    readonly property color onTertiaryContainer: "#ffd7f2"
 
     // Outlines & Borders
-    readonly property color outline: "#8f909a"
+    readonly property color outline: "#90909a"
     readonly property color outlineVariant: "#45464f"
 
     // Semantic States

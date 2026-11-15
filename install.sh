@@ -269,8 +269,8 @@ run_install() {
         
         if command -v quickshell >/dev/null 2>&1; then
             pkill quickshell 2>/dev/null || true
-            sleep 0.2
-            quickshell >/dev/null 2>&1 & disown
+            sleep 0.3
+            quickshell -p "$SHELL_DIR/quickshell/shell.qml" >/tmp/quickshell.log 2>&1 & disown
             log_ok "Quickshell top bar started."
         fi
     fi
