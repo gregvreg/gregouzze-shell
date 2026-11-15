@@ -1,0 +1,30 @@
+{
+  "theme": "dark",
+  "colors": {
+    "background": "#111318",
+    "on_background": "#e1e2e9",
+    "surface": "#111318",
+    "on_surface": "#e1e2e9",
+    "surface_variant": "#43474e",
+    "on_surface_variant": "#c3c6cf",
+    "surface_container": "#1d2024",
+    "surface_container_high": "#272a2f",
+    "surface_container_highest": "#32353a",
+    "primary": "#a4c9fe",
+    "on_primary": "#00315d",
+    "primary_container": "#204876",
+    "on_primary_container": "#d4e3ff",
+    "secondary": "#bcc7db",
+    "on_secondary": "#263141",
+    "secondary_container": "#3d4758",
+    "on_secondary_container": "#d8e3f8",
+    "tertiary": "#d9bde3",
+    "on_tertiary": "#3d2946",
+    "tertiary_container": "#543f5e",
+    "on_tertiary_container": "#f6d9ff",
+    "outline": "#8d9199",
+    "outline_variant": "#43474e",
+    "error": "#ffb4ab",
+    "on_error": "#690005"
+  }
+}

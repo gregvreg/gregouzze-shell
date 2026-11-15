@@ -1,0 +1,38 @@
+# ==============================================================================
+# Matugen Configuration - gregouzze-shell
+# Material You dynamic color generator (Dark Mode)
+# ==============================================================================
+
+[config]
+# Global Matugen preferences
+# Force dark mode by default for coding comfort and contrast
+default_mode = "dark"
+# Pick the most dominant extracted color automatically without interactive prompts
+source_color_index = 0
+
+# ------------------------------------------------------------------------------
+# Hyprland Colors Template
+# ------------------------------------------------------------------------------
+[templates.hyprland]
+input_path = "~/.config/gregouzze-shell/matugen/templates/hyprland-colors.conf"
+output_path = "~/.config/gregouzze-shell/hypr/colors.conf"
+post_hook = "hyprctl reload 2>/dev/null || true"
+
+# ------------------------------------------------------------------------------
+# Kitty Terminal Colors Template
+# ------------------------------------------------------------------------------
+[templates.kitty]
+input_path = "~/.config/gregouzze-shell/matugen/templates/kitty-colors.conf"
+output_path = "~/.config/gregouzze-shell/kitty/colors.conf"
+post_hook = "pkill -SIGUSR1 kitty 2>/dev/null || true"
+
+# ------------------------------------------------------------------------------
+# Quickshell Colors Templates (QML & JSON)
+# ------------------------------------------------------------------------------
+[templates.quickshell_qml]
+input_path = "~/.config/gregouzze-shell/matugen/templates/quickshell-colors.qml"
+output_path = "~/.config/gregouzze-shell/quickshell/Colors.qml"
+
+[templates.quickshell_json]
+input_path = "~/.config/gregouzze-shell/matugen/templates/quickshell-colors.json"
+output_path = "~/.config/gregouzze-shell/quickshell/colors.json"
