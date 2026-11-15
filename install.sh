@@ -193,20 +193,31 @@ setup_symlinks() {
     # Quickshell configuration link
     safe_symlink "$QUICKSHELL_SRC" "$QUICKSHELL_TARGET" "Quickshell Shell"
 
-    # Hyprland colors link
+    # Hyprland configuration & colors links
+    safe_symlink "$HYPR_SRC/hyprland.conf" "$HYPR_TARGET/hyprland.conf" "Hyprland Main Config"
     safe_symlink "$HYPR_SRC/colors.conf" "$HYPR_TARGET/colors.conf" "Hyprland Colors"
+    safe_symlink "$HYPR_SRC/keybinds.conf" "$HYPR_TARGET/keybinds.conf" "Hyprland Keybinds"
+    safe_symlink "$HYPR_SRC/rules.conf" "$HYPR_TARGET/rules.conf" "Hyprland Rules"
 
-    # Kitty colors link
+    # Kitty configuration & colors links
+    safe_symlink "$KITTY_SRC/kitty.conf" "$KITTY_TARGET/kitty.conf" "Kitty Main Config"
     safe_symlink "$KITTY_SRC/colors.conf" "$KITTY_TARGET/colors.conf" "Kitty Colors"
 
-    # If awww is installed but swww is not in PATH, create compatibility link in ~/.local/bin
+    # If awww is installed but swww is not in PATH, create compatibility alias in ~/.local/bin
     if command -v awww >/dev/null 2>&1 && ! command -v swww >/dev/null 2>&1; then
+        local awww_bin awww_daemon_bin
+        awww_bin="$(command -v awww)"
         mkdir -p "$HOME/.local/bin"
-        ln -sfn "$(which awww)" "$HOME/.local/bin/swww"
-        if command -v awww-daemon >/dev/null 2>&1 && ! command -v swww-daemon >/dev/null 2>&1; then
-            ln -sfn "$(which awww-daemon)" "$HOME/.local/bin/swww-daemon"
+        if [[ -n "$awww_bin" ]]; then
+            ln -sfn "$awww_bin" "$HOME/.local/bin/swww"
         fi
-        log_ok "Created swww compatibility alias (~/.local/bin/swww -> $(which awww))."
+        if command -v awww-daemon >/dev/null 2>&1 && ! command -v swww-daemon >/dev/null 2>&1; then
+            awww_daemon_bin="$(command -v awww-daemon)"
+            if [[ -n "$awww_daemon_bin" ]]; then
+                ln -sfn "$awww_daemon_bin" "$HOME/.local/bin/swww-daemon"
+            fi
+        fi
+        log_ok "Created swww compatibility alias (~/.local/bin/swww -> $awww_bin)."
     fi
 
     log_ok "All symbolic links created and validated."
@@ -337,16 +348,16 @@ show_info() {
     local binaries=("hyprctl" "quickshell" "matugen" "kitty" "jq" "notify-send")
     for bin in "${binaries[@]}"; do
         if command -v "$bin" >/dev/null 2>&1; then
-            printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s${C_RESET}\n" "$bin" "$(which "$bin")"
+            printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s${C_RESET}\n" "$bin" "$(command -v "$bin")"
         else
             printf "  ${C_RED}✖${C_RESET} %-14s : ${C_RED}NOT FOUND${C_RESET}\n" "$bin"
         fi
     done
 
     if command -v swww >/dev/null 2>&1; then
-        printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s${C_RESET}\n" "swww" "$(which swww)"
+        printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s${C_RESET}\n" "swww" "$(command -v swww)"
     elif command -v awww >/dev/null 2>&1; then
-        printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s (swww replacement)${C_RESET}\n" "awww" "$(which awww)"
+        printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s (swww replacement)${C_RESET}\n" "awww" "$(command -v awww)"
     else
         printf "  ${C_RED}✖${C_RESET} %-14s : ${C_RED}NOT FOUND (swww / awww)${C_RESET}\n" "swww/awww"
     fi
