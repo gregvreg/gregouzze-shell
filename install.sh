@@ -79,15 +79,14 @@ detect_aur_helper() {
 }
 
 # ------------------------------------------------------------------------------
-# 1. Dependency Checks & Installation
+# 1. Dependency Checks & Automatic Installation
 # ------------------------------------------------------------------------------
 check_dependencies() {
-    log_section "Checking System Dependencies"
+    log_section "Checking & Installing System Dependencies"
 
-    local core_deps=("hyprland" "kitty" "swww" "matugen" "quickshell")
+    local core_deps=("hyprland" "kitty" "matugen" "quickshell")
     local util_deps=("jq" "notify-send" "socat")
-    local missing_pacman=()
-    local missing_aur=()
+    local missing_packages=()
 
     echo -e "${C_BOLD}Core Packages:${C_RESET}"
     for dep in "${core_deps[@]}"; do
@@ -97,68 +96,63 @@ check_dependencies() {
             printf "  ${C_GREEN}✔${C_RESET} %-14s ${C_DIM}(%s)${C_RESET}\n" "$dep" "$ver"
         else
             printf "  ${C_RED}✖${C_RESET} %-14s ${C_RED}[MISSING]${C_RESET}\n" "$dep"
-            if [[ "$dep" == "quickshell" || "$dep" == "matugen" || "$dep" == "swww" ]]; then
-                missing_aur+=("$dep")
-            else
-                missing_pacman+=("$dep")
-            fi
+            missing_packages+=("$dep")
         fi
     done
+
+    # Wallpaper daemon detection (swww or awww)
+    local wall_installed=false
+    local wall_name=""
+    if command -v swww >/dev/null 2>&1; then
+        wall_installed=true
+        wall_name="swww"
+    elif command -v awww >/dev/null 2>&1; then
+        wall_installed=true
+        wall_name="awww"
+    fi
+
+    if [[ "$wall_installed" == true ]]; then
+        local ver
+        ver="$("$wall_name" --version 2>/dev/null | head -n1 || echo "installed")"
+        printf "  ${C_GREEN}✔${C_RESET} %-14s ${C_DIM}(%s: %s)${C_RESET}\n" "swww/awww" "$wall_name" "$ver"
+    else
+        printf "  ${C_RED}✖${C_RESET} %-14s ${C_RED}[MISSING]${C_RESET}\n" "swww/awww"
+        missing_packages+=("awww")
+    fi
 
     echo -e "\n${C_BOLD}Utility Packages:${C_RESET}"
     for dep in "${util_deps[@]}"; do
         if command -v "$dep" >/dev/null 2>&1; then
             printf "  ${C_GREEN}✔${C_RESET} %-14s ${C_DIM}(installed)${C_RESET}\n" "$dep"
         else
-            printf "  ${C_YELLOW}⚠${C_RESET} %-14s ${C_YELLOW}[OPTIONAL / MISSING]${C_RESET}\n" "$dep"
+            printf "  ${C_YELLOW}⚠${C_RESET} %-14s ${C_YELLOW}[MISSING]${C_RESET}\n" "$dep"
             if [[ "$dep" == "notify-send" ]]; then
-                missing_pacman+=("libnotify")
+                missing_packages+=("libnotify")
             else
-                missing_pacman+=("$dep")
+                missing_packages+=("$dep")
             fi
         fi
     done
 
-    local total_missing=$((${#missing_pacman[@]} + ${#missing_aur[@]}))
-    if [[ $total_missing -eq 0 ]]; then
+    if [[ ${#missing_packages[@]} -eq 0 ]]; then
         log_ok "All required dependencies are satisfied!"
         return 0
     fi
 
-    log_warn "Missing dependencies detected: ${missing_pacman[*]} ${missing_aur[*]}"
+    log_section "Automatically Installing Missing Dependencies"
+    echo -e "Packages to install: ${C_BOLD}${missing_packages[*]}${C_RESET}"
     
-    # Check if we should prompt for installation
     local aur_helper
     aur_helper="$(detect_aur_helper)"
 
-    if [[ -z "$aur_helper" ]]; then
-        log_warn "No AUR helper (yay or paru) detected. Please install missing AUR packages manually."
-        if [[ ${#missing_pacman[@]} -gt 0 ]]; then
-            echo -e "You can install official packages with:\n  sudo pacman -S ${missing_pacman[*]}"
-        fi
-        return 1
-    fi
-
-    read -rp "Would you like to install missing dependencies using $aur_helper now? [Y/n] " response
-    response="${response:-y}"
-    if [[ "$response" =~ ^[Yy]$ ]]; then
-        local to_install=()
-        for p in "${missing_pacman[@]}"; do to_install+=("$p"); done
-        for p in "${missing_aur[@]}"; do
-            # Translate package names to standard AUR equivalents if needed
-            case "$p" in
-                quickshell) to_install+=("quickshell-git") ;;
-                matugen)    to_install+=("matugen-bin") ;;
-                swww)       to_install+=("swww") ;;
-                *)          to_install+=("$p") ;;
-            esac
-        done
-
-        log_info "Executing: $aur_helper -S --needed ${to_install[*]}"
-        "$aur_helper" -S --needed "${to_install[@]}"
-        log_ok "Dependencies installation finished."
+    if [[ -n "$aur_helper" ]]; then
+        log_info "Installing automatically via $aur_helper (--noconfirm)..."
+        "$aur_helper" -S --needed --noconfirm "${missing_packages[@]}"
+        log_ok "Dependencies installed successfully."
     else
-        log_warn "Dependency installation skipped by user."
+        log_info "No AUR helper found. Installing automatically via sudo pacman (--noconfirm)..."
+        sudo pacman -S --needed --noconfirm "${missing_packages[@]}"
+        log_ok "Dependencies installed successfully."
     fi
 }
 
@@ -204,6 +198,16 @@ setup_symlinks() {
 
     # Kitty colors link
     safe_symlink "$KITTY_SRC/colors.conf" "$KITTY_TARGET/colors.conf" "Kitty Colors"
+
+    # If awww is installed but swww is not in PATH, create compatibility link in ~/.local/bin
+    if command -v awww >/dev/null 2>&1 && ! command -v swww >/dev/null 2>&1; then
+        mkdir -p "$HOME/.local/bin"
+        ln -sfn "$(which awww)" "$HOME/.local/bin/swww"
+        if command -v awww-daemon >/dev/null 2>&1 && ! command -v swww-daemon >/dev/null 2>&1; then
+            ln -sfn "$(which awww-daemon)" "$HOME/.local/bin/swww-daemon"
+        fi
+        log_ok "Created swww compatibility alias (~/.local/bin/swww -> $(which awww))."
+    fi
 
     log_ok "All symbolic links created and validated."
 }
@@ -330,14 +334,22 @@ show_info() {
 
     echo ""
     echo -e "${C_BOLD}Dependencies Status:${C_RESET}"
-    local binaries=("hyprctl" "quickshell" "matugen" "swww" "kitty" "jq" "notify-send")
+    local binaries=("hyprctl" "quickshell" "matugen" "kitty" "jq" "notify-send")
     for bin in "${binaries[@]}"; do
         if command -v "$bin" >/dev/null 2>&1; then
-            printf "  ${C_GREEN}✔${C_RESET} %-12s : ${C_DIM}%s${C_RESET}\n" "$bin" "$(which "$bin")"
+            printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s${C_RESET}\n" "$bin" "$(which "$bin")"
         else
-            printf "  ${C_RED}✖${C_RESET} %-12s : ${C_RED}NOT FOUND${C_RESET}\n" "$bin"
+            printf "  ${C_RED}✖${C_RESET} %-14s : ${C_RED}NOT FOUND${C_RESET}\n" "$bin"
         fi
     done
+
+    if command -v swww >/dev/null 2>&1; then
+        printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s${C_RESET}\n" "swww" "$(which swww)"
+    elif command -v awww >/dev/null 2>&1; then
+        printf "  ${C_GREEN}✔${C_RESET} %-14s : ${C_DIM}%s (swww replacement)${C_RESET}\n" "awww" "$(which awww)"
+    else
+        printf "  ${C_RED}✖${C_RESET} %-14s : ${C_RED}NOT FOUND (swww / awww)${C_RESET}\n" "swww/awww"
+    fi
 
     log_section "Default Keybindings Quick Reference"
     cat << "EOF"

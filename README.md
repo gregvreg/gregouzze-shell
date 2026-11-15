@@ -116,22 +116,20 @@ Le flux d'orchestration transforme n'importe quelle image en un écosystème coh
 Clonez le dépôt dans votre répertoire `~/.config/gregouzze-shell` et lancez l'installateur :
 
 ```bash
-git clone https://github.com/gregouzze/gregouzze-shell.git ~/.config/gregouzze-shell && ~/.config/gregouzze-shell/install.sh --install
+git clone https://github.com/gregvreg/gregouzze-shell.git ~/.config/gregouzze-shell && ~/.config/gregouzze-shell/install.sh --install
 ```
 
 ### 2. Dépendances Requises (Arch Linux)
 
-L'installateur peut installer automatiquement les paquets nécessaires via votre helper AUR (`paru` ou `yay`), ou vous pouvez les installer à la main :
+L'installateur installe automatiquement toutes les dépendances sans confirmation requise. Vous pouvez aussi les installer manuellement via pacman :
 
 ```bash
-# Paquets officiels (Pacman)
-sudo pacman -S --needed hyprland kitty jq libnotify socat qt6-declarative qt6-wayland
-
-# Paquets AUR
-yay -S --needed quickshell-git matugen-bin swww
-# ou avec paru :
-# paru -S --needed quickshell-git matugen-bin swww
+# Tous les paquets sont disponibles directement dans les dépôts officiels Arch Linux :
+sudo pacman -S --needed hyprland kitty awww matugen quickshell jq libnotify socat qt6-declarative qt6-wayland
 ```
+
+> [!NOTE]
+> Sur Arch Linux, `swww` a été renommé en **`awww`** dans les dépôts officiels (`extra/awww`). `gregouzze-shell` gère nativement et de manière transparente les deux versions (`awww` et `swww`).
 
 ---
 

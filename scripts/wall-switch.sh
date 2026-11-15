@@ -132,18 +132,28 @@ fi
 log_info "Active Wallpaper: ${C_BOLD}$WALLPAPER${C_RESET}"
 
 # ------------------------------------------------------------------------------
-# 1. Wallpaper Transition with swww
+# 1. Wallpaper Transition with swww / awww
 # ------------------------------------------------------------------------------
+SWWW_BIN=""
+SWWW_DAEMON=""
 if command -v swww >/dev/null 2>&1; then
-    # Ensure swww-daemon is running and responding
-    if ! swww query >/dev/null 2>&1; then
-        log_info "Starting swww-daemon in background..."
-        swww-daemon >/dev/null 2>&1 &
+    SWWW_BIN="swww"
+    SWWW_DAEMON="swww-daemon"
+elif command -v awww >/dev/null 2>&1; then
+    SWWW_BIN="awww"
+    SWWW_DAEMON="awww-daemon"
+fi
+
+if [[ -n "$SWWW_BIN" ]]; then
+    # Ensure daemon is running and responding
+    if ! "$SWWW_BIN" query >/dev/null 2>&1; then
+        log_info "Starting $SWWW_DAEMON in background..."
+        "$SWWW_DAEMON" >/dev/null 2>&1 &
         
         # Poll up to 3 seconds for daemon socket readiness
         ready=false
         for _ in {1..30}; do
-            if swww query >/dev/null 2>&1; then
+            if "$SWWW_BIN" query >/dev/null 2>&1; then
                 ready=true
                 break
             fi
@@ -151,24 +161,24 @@ if command -v swww >/dev/null 2>&1; then
         done
 
         if [ "$ready" = true ]; then
-            log_ok "swww-daemon is initialized and responding."
+            log_ok "$SWWW_DAEMON is initialized and responding."
         else
-            log_warn "swww-daemon did not respond within timeout, attempting transition anyway."
+            log_warn "$SWWW_DAEMON did not respond within timeout, attempting transition anyway."
         fi
     fi
 
-    log_info "Applying wallpaper transition via swww (${TRANSITION_TYPE})..."
-    swww img "$WALLPAPER" \
+    log_info "Applying wallpaper transition via $SWWW_BIN (${TRANSITION_TYPE})..."
+    "$SWWW_BIN" img "$WALLPAPER" \
         --transition-type "$TRANSITION_TYPE" \
         --transition-pos 0.5,0.5 \
         --transition-step "$TRANSITION_STEP" \
         --transition-fps "$TRANSITION_FPS" \
         --transition-duration "$TRANSITION_DURATION" 2>/dev/null || {
-            log_warn "swww img returned a non-zero exit status; daemon might be starting up."
+            log_warn "$SWWW_BIN img returned a non-zero exit status; daemon might be starting up."
         }
     log_ok "Wallpaper transition applied successfully."
 else
-    log_warn "'swww' binary not found. Skipping live desktop wallpaper setting."
+    log_warn "Neither 'swww' nor 'awww' binary found. Skipping live desktop wallpaper setting."
 fi
 
 # ------------------------------------------------------------------------------
