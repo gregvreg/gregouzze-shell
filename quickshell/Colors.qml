@@ -14,11 +14,11 @@ QtObject {
 
     // Core Surfaces & Backgrounds
     readonly property color background: "#121318"
-    readonly property color onBackground: "#e3e1e9"
+    readonly property color contentBackground: "#e3e1e9"
     readonly property color surface: "#121318"
-    readonly property color onSurface: "#e3e1e9"
+    readonly property color contentSurface: "#e3e1e9"
     readonly property color surfaceVariant: "#45464f"
-    readonly property color onSurfaceVariant: "#c6c5d0"
+    readonly property color contentSurfaceVariant: "#c6c5d0"
     readonly property color surfaceContainerLowest: "#0d0e13"
     readonly property color surfaceContainerLow: "#1b1b21"
     readonly property color surfaceContainer: "#1f1f25"
@@ -27,21 +27,21 @@ QtObject {
 
     // Primary Accents
     readonly property color primary: "#b9c3ff"
-    readonly property color onPrimary: "#212c61"
+    readonly property color contentPrimary: "#212c61"
     readonly property color primaryContainer: "#384379"
-    readonly property color onPrimaryContainer: "#dee1ff"
+    readonly property color contentPrimaryContainer: "#dee1ff"
 
     // Secondary Accents
     readonly property color secondary: "#c3c5dd"
-    readonly property color onSecondary: "#2c2f42"
+    readonly property color contentSecondary: "#2c2f42"
     readonly property color secondaryContainer: "#434659"
-    readonly property color onSecondaryContainer: "#dfe1f9"
+    readonly property color contentSecondaryContainer: "#dfe1f9"
 
     // Tertiary Accents
     readonly property color tertiary: "#e5bad8"
-    readonly property color onTertiary: "#44263e"
+    readonly property color contentTertiary: "#44263e"
     readonly property color tertiaryContainer: "#5c3c55"
-    readonly property color onTertiaryContainer: "#ffd7f2"
+    readonly property color contentTertiaryContainer: "#ffd7f2"
 
     // Outlines & Borders
     readonly property color outline: "#90909a"
@@ -49,17 +49,17 @@ QtObject {
 
     // Semantic States
     readonly property color error: "#ffb4ab"
-    readonly property color onError: "#690005"
+    readonly property color contentError: "#690005"
     readonly property color errorContainer: "#93000a"
-    readonly property color onErrorContainer: "#ffdad6"
+    readonly property color contentErrorContainer: "#ffdad6"
     readonly property color shadow: "#000000"
     readonly property color scrim: "#000000"
 
     // UI Convenience Aliases (for Caelestia / modern QML widgets)
     readonly property color accent: primary
-    readonly property color onAccent: onPrimary
+    readonly property color contentAccent: contentPrimary
     readonly property color bg: surface
-    readonly property color fg: onSurface
+    readonly property color fg: contentSurface
     readonly property color borderActive: primary
     readonly property color borderInactive: outlineVariant
 

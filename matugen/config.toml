@@ -1,13 +1,12 @@
 # ==============================================================================
 # Matugen Configuration - gregouzze-shell
-# Material You dynamic color generator (Dark Mode)
+# Material You dynamic color generator
 # ==============================================================================
 
 [config]
-# Global Matugen preferences
 # Force dark mode by default for coding comfort and contrast
 default_mode = "dark"
-# Pick the most dominant extracted color automatically without interactive prompts
+# Pick the most dominant extracted color automatically
 source_color_index = 0
 
 # ------------------------------------------------------------------------------
@@ -16,7 +15,6 @@ source_color_index = 0
 [templates.hyprland]
 input_path = "~/.config/gregouzze-shell/matugen/templates/hyprland-colors.conf"
 output_path = "~/.config/gregouzze-shell/hypr/colors.conf"
-post_hook = "hyprctl reload 2>/dev/null || true"
 
 # ------------------------------------------------------------------------------
 # Kitty Terminal Colors Template
@@ -27,12 +25,22 @@ output_path = "~/.config/gregouzze-shell/kitty/colors.conf"
 post_hook = "pkill -SIGUSR1 kitty 2>/dev/null || true"
 
 # ------------------------------------------------------------------------------
-# Quickshell Colors Templates (QML & JSON)
+# Quickshell Colors (QML Singleton)
 # ------------------------------------------------------------------------------
 [templates.quickshell_qml]
 input_path = "~/.config/gregouzze-shell/matugen/templates/quickshell-colors.qml"
 output_path = "~/.config/gregouzze-shell/quickshell/Colors.qml"
 
+# ------------------------------------------------------------------------------
+# Quickshell Colors (JSON — for JS-side consumption)
+# ------------------------------------------------------------------------------
 [templates.quickshell_json]
 input_path = "~/.config/gregouzze-shell/matugen/templates/quickshell-colors.json"
 output_path = "~/.config/gregouzze-shell/quickshell/colors.json"
+
+# ------------------------------------------------------------------------------
+# Mako Notification Daemon
+# ------------------------------------------------------------------------------
+[templates.mako]
+input_path = "~/.config/gregouzze-shell/matugen/templates/mako-colors.conf"
+output_path = "~/.config/gregouzze-shell/mako/config"

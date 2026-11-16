@@ -1,1 +1,6 @@
 singleton Colors 1.0 Colors.qml
+StatusBar 1.0 StatusBar.qml
+DesktopClock 1.0 DesktopClock.qml
+PowerMenu 1.0 PowerMenu.qml
+Launcher 1.0 Launcher.qml
+WallpaperSelector 1.0 WallpaperSelector.qml
