@@ -196,8 +196,30 @@ do_install() {
 do_links() {
     log_section "Setting up symbolic links"
 
-    # Hyprland: source our config from existing hyprland.conf
-    if [[ -d "$CONFIG_DIR/hypr" ]]; then
+    # Native Hyprland Lua configurations need a Lua hook; a .conf source line
+    # is ignored when the active entry point is hyprland.lua.
+    if [[ -f "$CONFIG_DIR/hypr/hyprland.lua" ]]; then
+        local entry="$CONFIG_DIR/hypr/hyprland.lua"
+        local hook='dofile((os.getenv("XDG_CONFIG_HOME") or (os.getenv("HOME") .. "/.config")) .. "/gregouzze-shell/hypr/hyprland.lua")'
+        if ! grep -qF 'gregouzze-shell/hypr/hyprland.lua' "$entry"; then
+            printf '\n-- gregouzze-shell integration\n%s\n' "$hook" >> "$entry"
+            log_ok "Added gregouzze-shell hook to $entry"
+        else
+            log_ok "Hyprland Lua entry point already loads gregouzze-shell"
+        fi
+
+        # Release bindings already assigned to the old launcher and close action.
+        local lua_keys="$CONFIG_DIR/hypr/config/keybinds.lua"
+        if [[ -f "$lua_keys" ]] && { grep -q 'serpantinum msg toggle launcher' "$lua_keys" || grep -q 'mainMod .. " + W", hl.dsp.window.close()' "$lua_keys"; }; then
+            cp -n "$lua_keys" "${lua_keys}.gregouzze-backup"
+            sed -i \
+                -e '/serpantinum msg toggle launcher/d' \
+                -e 's/mainMod \.\. " + W", hl\.dsp\.window\.close()/mainMod .. " + Q", hl.dsp.window.close()/' \
+                "$lua_keys"
+            log_ok "Freed Super+Space and Super+W in $lua_keys (backup saved)"
+        fi
+    elif [[ -d "$CONFIG_DIR/hypr" ]]; then
+        # Standard Hyprland configuration: source our modular .conf file.
         local hypr_conf="$CONFIG_DIR/hypr/hyprland.conf"
         local source_line="source = ~/.config/gregouzze-shell/hypr/hyprland.conf"
         if [[ -f "$hypr_conf" ]]; then
