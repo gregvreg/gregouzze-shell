@@ -12,7 +12,6 @@ import Quickshell.Wayland
 PanelWindow {
     id: wallSel
 
-    required property var screen
     property bool active: false
     property string wallpaperDir: (Quickshell.env("HOME") || "/tmp") + "/Pictures/Wallpapers"
     signal dismissed()

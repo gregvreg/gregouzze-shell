@@ -12,7 +12,6 @@ PanelWindow {
     id: bar
 
     // ── Public interface ─────────────────────────────────────────────────────
-    required property var screen
     property int activeWorkspace: 1
     property string cpuUsage: "0"
     property string ramUsage: "0G"

@@ -12,7 +12,6 @@ import Quickshell.Wayland
 PanelWindow {
     id: launcher
 
-    required property var screen
     property bool active: false
     signal dismissed()
 

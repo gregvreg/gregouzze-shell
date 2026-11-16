@@ -11,8 +11,6 @@ import Quickshell.Wayland
 PanelWindow {
     id: clockWidget
 
-    required property var screen
-
     anchors { top: true; left: true }
     margins { top: 70; left: 28 }
     width: 260; height: 120
